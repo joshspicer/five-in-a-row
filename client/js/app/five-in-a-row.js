@@ -39,11 +39,11 @@ function tryCommitMove(tile) {
     .then(res => {
       res.json().then(data => {
         console.log(data);
-      });
 
-      // Update the global state.
-      // console.log(state);
-      return true;
+        // If Data is valid, update global state, and render move.
+
+        // If not valid, provide an alert with the error message.
+      });
     })
 }
 
