@@ -3,7 +3,6 @@
 ## Client
 
 ```bash
-npm install -g http-server
 cd client
-http-server
+python -m http.server
 ```
