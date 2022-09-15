@@ -21,6 +21,7 @@ function mapClickToGrid(x, y) {
 
 // Sends move to server
 function tryCommitMove(tile) {
+  socket.emit("move", tile);
 }
 
 function displayMove(tile, color) {
@@ -32,9 +33,9 @@ function updateBoard() {
   for (var i = 0; i < rows; i++) {
     for (var j = 0; j < columns; j++) {
       if (state.board[i][j] === BLACK) {
-        displayMove({ xIdx: j, yIdx: i }, "black");
+        displayMove({ xIdx: i, yIdx: j }, "black");
       } else if (state.board[i][j] === BLUE) {
-        displayMove({ xIdx: j, yIdx: i }, "blue");
+        displayMove({ xIdx: i, yIdx: j }, "blue");
       }
     }
   }
@@ -47,7 +48,7 @@ function loadGame() {
   displayGrid(ctx);
 
   // Set up WebSocket connection 
-  var socket = io("ws://localhost:5000");
+  socket = io("ws://localhost:5000");
 
   // Event handler for new connections.
   // The callback function is invoked when a connection with the
@@ -61,13 +62,17 @@ function loadGame() {
   });
 
   socket.on("accept_player", function (msg) {
+    console.log("accept_player: ", msg);
     alert("You are player " + msg + "!");
   });
 
-  socket.on("reject_player", function (msg) {
-    alert("Rejected!");
+  socket.on("reject_with_error", function (msg) {
+    alert("Rejected with error: " + msg);
   });
 
+  socket.on("game_over", function (msg) {
+    alert("Game Over!  Winner:" + msg);
+  });
 
   canvas.onmousedown = function (event) {
     console.log("x: " + event.offsetX + " y: " + event.offsetY);
