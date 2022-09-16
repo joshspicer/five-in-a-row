@@ -41,7 +41,6 @@ function updateBoard() {
   }
 }
 
-
 function loadGame() {
   canvas = document.getElementById("gameCanvas");
   ctx = canvas.getContext("2d");
@@ -71,7 +70,7 @@ function loadGame() {
   });
 
   socket.on("game_over", function (msg) {
-    alert("Game Over!  Winner:" + msg);
+    alert("Game Over!  Winner:" + msg + "\n Refresh to play again!");
   });
 
   canvas.onmousedown = function (event) {

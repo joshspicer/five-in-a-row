@@ -1,3 +1,4 @@
 #!/bin/bash
 
-npm install -g http-server
+cd server
+pip install -r requirements.txt

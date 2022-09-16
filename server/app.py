@@ -1,8 +1,7 @@
-from tkinter import E
 from flask import Flask
 from flask import request
 from flask_socketio import SocketIO, emit
-
+import copy
 
 EMPTY = 0
 BLACK = 1
@@ -13,7 +12,7 @@ initial_state = {
     'turn' : BLACK
 }
 
-state = initial_state
+state = copy.deepcopy(initial_state)
 
 # Store WebSocket session ID to authenticate user.
 player_black = None
@@ -39,7 +38,7 @@ def reset_game():
     global state, player_black, player_blue
     player_black = None
     player_blue = None
-    state = initial_state
+    state = copy.deepcopy(initial_state)
 
 def check_if_game_over():
     # Check horizontals for 5 in a row of the same color.
@@ -63,6 +62,13 @@ def check_if_game_over():
                 continue
             if state['board'][row][col] == state['board'][row+1][col+1] == state['board'][row+2][col+2] == state['board'][row+3][col+3] == state['board'][row+4][col+4]:
                 return True, state['board'][row][col]
+    # Check for reverse diagonals for 5 in a row of the same color.
+    for row in range(4, 19):
+        for col in range(15):
+            if state['board'][row][col] == EMPTY:
+                continue
+            if state['board'][row][col] == state['board'][row-1][col+1] == state['board'][row-2][col+2] == state['board'][row-3][col+3] == state['board'][row-4][col+4]:
+                return True, state['board'][row][col]
 
     return False, None
 
@@ -83,7 +89,6 @@ def join_game():
 
     # Emit the initial game state to the joined player
     emit('state', state)
-
 
 # Handles a move made by a player
 @socketio.event
